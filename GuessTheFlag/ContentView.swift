@@ -8,63 +8,70 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var showingAlert = false
+    @State private var countries = ["Estonia", "France", "Germany",
+                     "Ireland", "Italy", "Nigeria",
+                     "Poland", "Spain", "UK",
+                     "Ukraine", "USA"].shuffled()
+    @State private var correctAnswer = Int.random(in: 0...2)
+    
+    @State private var showingScore = false
+    @State private var scoreTitle = ""
+    @State private var currentScore = 0
+    
+    func flagTapped(_ number : Int) {
+        if number == correctAnswer {
+            scoreTitle = "Correct"
+            currentScore += 1
+        } else {
+            scoreTitle = "Wrong"
+        }
+        
+        showingScore = true
+    }
+    
+    func askQuestion() {
+        countries.shuffle()
+        correctAnswer = Int.random(in:0...2)
+    }
     
     var body: some View {
-        ZStack() {
-            VStack(spacing: 0) {
-                Button("Show Alert") {
-                    showingAlert = true
+        ZStack {
+            //Color.blue.ignoresSafeArea()
+            LinearGradient(
+                colors: [.blue, .black],
+                startPoint: .top,
+                endPoint: .bottom
+            ).ignoresSafeArea()
+            VStack(spacing: 30) {
+                VStack {
+                    Text("Tap the flag of")
+                        .foregroundStyle(.white)
+                        .font(.subheadline.weight(.heavy))
+                    Text(countries[correctAnswer])
+                        .foregroundStyle(.white)
+                        .font(.largeTitle.weight(.semibold))
+                    //largeTitle is the largest built-in iOS font size.
+                    // it automatically scales up or down depending on user settings (DYNAMIC TYPE)
+                    // we're still overriding it with .weight(.semibold)
                 }
-                .alert("Important Message", isPresented: $showingAlert) {
-                    //Button("OK") {} //Any button inside an alert automatically dismisses the alert.
-                    Button("Delete", role: .destructive) {}
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("Please read this!")
-                }// It doesn't matter where you use the alert() modifier
                 
-                Button("Button 1") {}
-                    .buttonStyle(.bordered)
-                Button("Button 2", role: .destructive, action: executeDelete)
-                .buttonStyle(.bordered)
-                Button("Button 3") {}
-                    .buttonStyle(.borderedProminent)
-                Button("Button 4", role: .destructive) {}
-                    .buttonStyle(.borderedProminent)
-                //Customizing...
-                Button("Button 5") {}
-                    .buttonStyle(.borderedProminent)
-                    .tint(.mint) //Apple recommends AGAINST too many prominent buttons
-                //Even MORE custom button
-                Button {
-                    print("Button was tapped")
-                } label: {
-                    Text("Tap me!")
-                        .padding()
-                        .foregroundStyle(.white)
-                        .background(.red)
-                }
-                Button {
-                    print("Edit button was tapped")
-                } label: {
-                    Image(systemName: "pencil")
-                }
-                // Image AND Text
-                Button {
-                    print("Edit button was tapped")
-                } label: {
-                    Label("Edit", systemImage: "pencil")
-                        .padding()
-                        .foregroundStyle(.white)
-                        .background(.red)
-                    // Looks like what you'd get with a simple HStack, but SwiftUI can automatically decide whether it shows Icon+Text, only Icon, Only Text, or both depending on how they're being used in our layout.
+                ForEach(0..<3) { number in
+                    Button {
+                        flagTapped(number)
+                    } label: {
+                        Image(countries[number])
+                            .clipShape(.capsule)
+                            .shadow(radius : 5)
+                    }
                 }
             }
-        }.ignoresSafeArea()
-    }
-    func executeDelete() {
-        print("Now Deleting...")
+        }.alert(
+            scoreTitle, isPresented: $showingScore
+        ) {
+            Button("Continue", action: askQuestion)
+        } message: {
+            Text("Your score is: \(currentScore)")
+        }
     }
 }
 
@@ -169,6 +176,11 @@ struct ContentView: View {
 //      we then attach our alert somewhere to our user interface
 //      and the State determines if it is shown or not.
 
+// SHAPES: 4 Built-in shapes
+//      - Rectangle
+//      - Rounded Rectangle
+//      - Circle
+//      - Capsule
 #Preview {
     ContentView()
 }
