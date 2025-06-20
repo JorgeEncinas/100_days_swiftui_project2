@@ -11,21 +11,36 @@ struct ContentView: View {
     var body: some View {
         ZStack() {
             VStack(spacing: 0) {
-                Color.red
-                Color.blue
+                //LinearGradient(
+                    //colors: [Color.white, Color.black],
+                //    stops: [
+                //        .init(color: .white, location: 0.25),//Gradient.Stop(color: .white, location: 0.25),
+                //        .init(color: .black, location: 0.90)//Gradient.Stop(color: .black, location: 0.90)
+                //    ], //Note `.init` is a shorthand bc Swift knows we want to create Gradient.Stop objects. (Views?)
+                //    startPoint: .top,
+                //    endPoint: .bottom
+                //)
+                //RadialGradient(
+                //    colors: [.blue, .black],
+                //    center: .center,
+                //    startRadius: 20,
+                //    endRadius: 200
+                //)
+                //AngularGradient(
+                //    colors: [.red, .yellow, .green, .blue, .purple, .red],
+                //    center: .center
+                //)
             }
-            Text("Your content")
-                .foregroundStyle(.secondary)
-                .padding(50)
-                .background(.ultraThinMaterial)
-            
-            //Color(red: 1, green: 0.8, blue: 0) //Here it is not obvious by context if we were to write just .green, so now it is necessary for you to write Color.green
-                //.frame(minWidth: 200, maxWidth: .infinity, maxHeight: .infinity)
-            //Note you can't have min/max AND width: 200, height: 200 (unlike CSS)
             //Text("Your content")
-            //    .background(.blue)
-        }//.background(.red) //This one changes from coloring just the text, to coloring everything! (and back to seemingly nothing.
-            .ignoresSafeArea()
+            //    .foregroundStyle(.secondary)
+            //    .padding(50)
+            //    .background(.ultraThinMaterial)
+            Text("Your content")
+                .frame(maxWidth: .infinity, maxHeight: .infinity) //(maxWidth:200, maxHeight: 500)
+                .foregroundStyle(.white)
+                .background(.red.gradient)
+            
+        }.ignoresSafeArea()
     }
 }
 
@@ -65,6 +80,42 @@ struct ContentView: View {
 //  That effect where your colors in the background are bleeding into the text in the foreground (that is, it is allowed to 'come through')
 //  Just a hint of the color from the background.
 
+// GRADIENTS
+//  There are 4 types of Gradients to work with
+//      like colors, most are views that can be drawn in our UI
+//  Gradients are made up of
+//      1. An array of colors to show
+//      2. Size and Direction information
+//      3. The type of gradient to use
+
+//  LINEAR GRADIENT
+//  Goes in ONE DIRECTION, so provide START and END points
+//      LinearGradient(colors: [.white, .black], startPoint: .top, endPoint:.bottom)
+
+//  GRADIENT STOPS
+//  Let us specify both a COLOR and HOW FAR ALONG THE GRADIENT THE COLOR SHOULD BE USED
+//      White from start, up to 45% of the available space, then black from 55% of the available space onwards.
+//      LinearGradient(stops: [
+//          Gradient.Stop(color: .white, location:0.45),
+//          Gradient.Stop(color: .black, location:0.55)
+//      ])
+
+// RADIAL GRADIENTS
+//      These move OUTWARD in a circle shape
+//  We don't specify a direction, but a START and END RADIUS
+//      how far from the center of the circle the color should start/stop changing
+
+// ANGULAR GRADIENT / CONIC GRADIENT / CONICAL GRADIENT
+//      This cycles colors around a circle, rather than Radiating Outward
+
+// All of these gradients can have STOPS PROVIDED.
+//  They can also work as STANDALONE VIEWS in your layouts.
+//  or be used as part of a MODIFIER.
+//  For example, as BACKGROUND FOR A TEXT VIEW.
+
+// THE FOURTH TYPE OF GRADIENT: .gradient after any color
+//  SwiftUI will automatically convert your color
+//  into a very gentle LINEAR GRADIENT.
 
 #Preview {
     ContentView()
