@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+struct FlagImage : View { //<Content : View> This is not needed here, since it would mean you want to receive some content INSIDE the View. We don't need that.
+    let imageFileName : String
+    //let callback : () -> Void
+    
+    var body : some View {
+        //Button() {        //Might be possible too, but let's see if further lessons show how this is supposed to be done.
+        //    callback()
+        //} label : {
+            Image(imageFileName)
+                .clipShape(.capsule)
+                .shadow(radius:5)
+        //}
+    }
+}
+
 struct ContentView: View {
     private let maxQuestionsAllowed : Int = 8
     @State private var countries = ["Estonia", "France", "Germany",
@@ -112,9 +127,7 @@ struct ContentView: View {
                             Button {
                                 flagTapped(number)
                             } label: {
-                                Image(countries[number])
-                                    .clipShape(.capsule)
-                                    .shadow(radius : 5)
+                                FlagImage(imageFileName: countries[number])
                             }
                         }
                     }
