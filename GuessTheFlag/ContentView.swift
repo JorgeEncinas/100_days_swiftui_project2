@@ -8,9 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showingAlert = false
+    
     var body: some View {
         ZStack() {
             VStack(spacing: 0) {
+                Button("Show Alert") {
+                    showingAlert = true
+                }
+                .alert("Important Message", isPresented: $showingAlert) {
+                    //Button("OK") {} //Any button inside an alert automatically dismisses the alert.
+                    Button("Delete", role: .destructive) {}
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("Please read this!")
+                }// It doesn't matter where you use the alert() modifier
+                
                 Button("Button 1") {}
                     .buttonStyle(.bordered)
                 Button("Button 2", role: .destructive, action: executeDelete)
@@ -142,6 +155,19 @@ struct ContentView: View {
 //  By default the screen reader will read your IMAGE NAME if it is enabled,
 //      so make sure you give your images clear names if you want to avoid confusing the user.
 //      OR, if they're purely decorative, use Image(decorative:) initializer.
+
+
+// ALERTS
+//  A common way of notifying the user
+//  a pop-up window with
+//      -title
+//      -button to dismiss it
+//  To present it, we don't assign it to a variable, then write myAlert.show()
+//  That would be like `series of events` thinking.
+
+//  Instead, we create state that tracks if it's being shown
+//      we then attach our alert somewhere to our user interface
+//      and the State determines if it is shown or not.
 
 #Preview {
     ContentView()
