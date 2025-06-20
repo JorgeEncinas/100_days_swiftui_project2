@@ -11,36 +11,47 @@ struct ContentView: View {
     var body: some View {
         ZStack() {
             VStack(spacing: 0) {
-                //LinearGradient(
-                    //colors: [Color.white, Color.black],
-                //    stops: [
-                //        .init(color: .white, location: 0.25),//Gradient.Stop(color: .white, location: 0.25),
-                //        .init(color: .black, location: 0.90)//Gradient.Stop(color: .black, location: 0.90)
-                //    ], //Note `.init` is a shorthand bc Swift knows we want to create Gradient.Stop objects. (Views?)
-                //    startPoint: .top,
-                //    endPoint: .bottom
-                //)
-                //RadialGradient(
-                //    colors: [.blue, .black],
-                //    center: .center,
-                //    startRadius: 20,
-                //    endRadius: 200
-                //)
-                //AngularGradient(
-                //    colors: [.red, .yellow, .green, .blue, .purple, .red],
-                //    center: .center
-                //)
+                Button("Button 1") {}
+                    .buttonStyle(.bordered)
+                Button("Button 2", role: .destructive, action: executeDelete)
+                .buttonStyle(.bordered)
+                Button("Button 3") {}
+                    .buttonStyle(.borderedProminent)
+                Button("Button 4", role: .destructive) {}
+                    .buttonStyle(.borderedProminent)
+                //Customizing...
+                Button("Button 5") {}
+                    .buttonStyle(.borderedProminent)
+                    .tint(.mint) //Apple recommends AGAINST too many prominent buttons
+                //Even MORE custom button
+                Button {
+                    print("Button was tapped")
+                } label: {
+                    Text("Tap me!")
+                        .padding()
+                        .foregroundStyle(.white)
+                        .background(.red)
+                }
+                Button {
+                    print("Edit button was tapped")
+                } label: {
+                    Image(systemName: "pencil")
+                }
+                // Image AND Text
+                Button {
+                    print("Edit button was tapped")
+                } label: {
+                    Label("Edit", systemImage: "pencil")
+                        .padding()
+                        .foregroundStyle(.white)
+                        .background(.red)
+                    // Looks like what you'd get with a simple HStack, but SwiftUI can automatically decide whether it shows Icon+Text, only Icon, Only Text, or both depending on how they're being used in our layout.
+                }
             }
-            //Text("Your content")
-            //    .foregroundStyle(.secondary)
-            //    .padding(50)
-            //    .background(.ultraThinMaterial)
-            Text("Your content")
-                .frame(maxWidth: .infinity, maxHeight: .infinity) //(maxWidth:200, maxHeight: 500)
-                .foregroundStyle(.white)
-                .background(.red.gradient)
-            
         }.ignoresSafeArea()
+    }
+    func executeDelete() {
+        print("Now Deleting...")
     }
 }
 
@@ -116,6 +127,21 @@ struct ContentView: View {
 // THE FOURTH TYPE OF GRADIENT: .gradient after any color
 //  SwiftUI will automatically convert your color
 //  into a very gentle LINEAR GRADIENT.
+
+// IMAGES
+//      1. Image("pencil") loads an image called "Pencil" that you have in your project
+//      2. Image(decorative: "pencil") will load the same image,
+//          but won't read it out for users who have enabled the screen reader
+//          This is useful for images that don't convey additional important information
+//      3. Image(systemName: "pencil") will load the pencil icon built into iOS
+//          this uses Apple's SF Symbols icon collection
+//          you can search for icons you like
+//          Download Apple's free SF Symbols app from the web to see the full set.
+
+// SCREENREADER
+//  By default the screen reader will read your IMAGE NAME if it is enabled,
+//      so make sure you give your images clear names if you want to avoid confusing the user.
+//      OR, if they're purely decorative, use Image(decorative:) initializer.
 
 #Preview {
     ContentView()
