@@ -22,6 +22,35 @@ struct FlagImage : View { //<Content : View> This is not needed here, since it w
     }
 }
 
+struct FlagButton : View {
+    @State private var rotationDegrees = 0.0
+    @State private var opacity = 1.0
+    
+    @Binding var selectedNumber : Int
+    var number : Int
+    var correctAnswer : Int
+    var countries : [String]
+    var flagTapped : (_ number : Int,_ selectedNumber : Binding<Int>) -> Void
+    
+    var body : some View {
+        Button {
+            withAnimation {
+                rotationDegrees += 360
+                selectedNumber = number
+            }
+            flagTapped(number, $selectedNumber)
+        } label: {
+            FlagImage(imageFileName: countries[number])
+        }
+        .rotation3DEffect(
+            .degrees(rotationDegrees),
+            axis: (x: 0, y: 1, z: 0)
+        )
+        .opacity(selectedNumber == -1 || selectedNumber == number ? 1.0 : 0.25)
+        .scaleEffect(selectedNumber == -1 || selectedNumber == number ? 1.0 : 0.25)
+    }
+}
+
 struct ContentView: View {
     private let maxQuestionsAllowed : Int = 8
     @State private var countries = ["Estonia", "France", "Germany",
@@ -29,6 +58,7 @@ struct ContentView: View {
                      "Poland", "Spain", "UK",
                      "Ukraine", "US", "Monaco"].shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
+    @State private var selectedNumber = -1
     
     @State private var showingScore = false
     @State private var scoreTitle = ""
@@ -57,8 +87,7 @@ struct ContentView: View {
         }
     }
     
-    func flagTapped(_ number : Int) {
-        
+    func flagTapped(number : Int, selectedNumber: Binding<Int>) {
         if number == correctAnswer {
             scoreTitle = "Correct"
             currentScore += 1
@@ -68,7 +97,7 @@ struct ContentView: View {
         
         questionsAsked += 1
         if(questionsAsked == maxQuestionsAllowed) {
-            scoreTitle += "| Game Over!"
+            scoreTitle += " | Game Over!"
             nextEventString = "Restart"
         }
         
@@ -76,7 +105,8 @@ struct ContentView: View {
         showingScore = true
     }
     
-    func askQuestion() {
+    func askQuestion(selectedNumber : Binding<Int>) {
+        selectedNumber.wrappedValue = -1
         if(questionsAsked >= maxQuestionsAllowed) { //It means they ran this to restart!
             questionsAsked = 1
             currentScore = 0
@@ -124,11 +154,13 @@ struct ContentView: View {
                         }
                         
                         ForEach(0..<3) { (number : Int) in
-                            Button {
-                                flagTapped(number)
-                            } label: {
-                                FlagImage(imageFileName: countries[number])
-                            }
+                            FlagButton(
+                                selectedNumber: $selectedNumber,
+                                number: number,
+                                correctAnswer: correctAnswer,
+                                countries: countries,
+                                flagTapped: flagTapped
+                            )
                         }
                     }
                     
@@ -139,6 +171,8 @@ struct ContentView: View {
                 .clipShape(.rect(cornerRadius: 20))
                 .ignoresSafeArea()
                 Spacer()
+                Text("Selected: \(selectedNumber) | Number: \(correctAnswer) (Debug)")
+                    .foregroundStyle(.white)
                 Text("Score: \(currentScore)")
                     .foregroundStyle(.white)
                     .font(.title.bold())
@@ -147,7 +181,9 @@ struct ContentView: View {
         }.alert(
             scoreTitle, isPresented: $showingScore
         ) {
-            Button(nextEventString, action: askQuestion)
+            Button(nextEventString) {
+                askQuestion(selectedNumber: $selectedNumber)
+            }
         } message: {
             Text(messageString)
         }
